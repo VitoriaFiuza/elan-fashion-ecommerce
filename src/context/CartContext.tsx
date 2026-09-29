@@ -3,6 +3,7 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useState,
   type ReactNode,
 } from "react";
@@ -27,7 +28,26 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [produtos, setProdutos] = useState<ProdutoSacola[]>([]);
+  const [carregado, setCarregado] = useState(false);
 
+useEffect(() => {
+  try {
+    const salvos = localStorage.getItem("elan-sacola");
+
+    if (salvos) {
+      setProdutos(JSON.parse(salvos));
+    }
+  } catch (erro) {
+    console.error("Erro ao carregar a sacola:", erro);
+  } finally {
+    setCarregado(true);
+  }
+}, []);
+useEffect(() => {
+  if (carregado) {
+    localStorage.setItem("elan-sacola", JSON.stringify(produtos));
+  }
+}, [produtos, carregado]);
   function adicionarProduto(produto: ProdutoSacola) {
     setProdutos((anteriores) => {
       const existente = anteriores.find(
