@@ -118,12 +118,12 @@ const {
               Frete calculado na finalização da compra.
             </p>
 
-            <button
-              type="button"
-              className="mt-8 w-full bg-black py-4 text-sm uppercase tracking-widest text-white"
-            >
-              Finalizar compra
-            </button>
+ <Link
+  href="/checkout"
+  className="mt-8 block w-full bg-black py-4 text-center text-sm uppercase tracking-widest text-white hover:bg-neutral-800"
+>
+  Finalizar compra
+</Link>
           </aside>
         </div>
       )}

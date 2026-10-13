@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -21,7 +22,7 @@ export default function Home() {
         <div className="flex gap-5 text-sm text-black">
           <span>Buscar</span>
           <span>Favoritos</span>
-          <span>Sacola</span>
+          <Link href="/sacola">Sacola</Link>
         </div>
       </header>
 
@@ -90,7 +91,7 @@ export default function Home() {
   </div>
 </a>
 
-  <div>
+<Link href="/produto/calca-alfaiataria">
     <Image
       src="/products/calca-01-frente.png"
       alt="Calça ÉLAN"
@@ -102,9 +103,8 @@ export default function Home() {
       <h3 className="text-sm text-black">Calça de Alfaiataria Élan</h3>
       <p className="mt-1 text-sm text-neutral-500">R$ 459,90</p>
     </div>
-  </div>
-
-  <div>
+</Link>
+  <Link href="/produto/camisa">
     <Image
       src="/products/camisa-01-frente.png"
       alt="Camisa ÉLAN"
@@ -112,25 +112,26 @@ export default function Home() {
       height={1000}
       className="w-full object-cover"
     />
-    <div className="mt-4">
-      <h3 className="text-sm text-black">Camisa Élan</h3>
-      <p className="mt-1 text-sm text-neutral-500">R$ 389,90</p>
-    </div>
+     <div className="mt-4">
+    <h3 className="text-sm text-black">Camisa Élan</h3>
+    <p className="mt-1 text-sm text-neutral-500">R$ 389,90</p>
   </div>
+</Link>
 
-  <div>
-    <Image
-      src="/products/vestido-01-frente.png"
-      alt="Vestido ÉLAN"
-      width={800}
-      height={1000}
-      className="w-full object-cover"
-    />
-    <div className="mt-4">
-      <h3 className="text-sm text-black">Vestido Midi Élan</h3>
-      <p className="mt-1 text-sm text-neutral-500">R$ 599,90</p>
-    </div>
+  <Link href="/produto/vestido-preto" className="block">
+  <Image
+    src="/products/vestido-01-frente.png"
+    alt="Vestido ÉLAN"
+    width={800}
+    height={1000}
+    className="w-full object-cover"
+  />
+
+  <div className="mt-4">
+    <h3 className="text-sm text-black">Vestido Midi Élan</h3>
+    <p className="mt-1 text-sm text-neutral-500">R$ 599,90</p>
   </div>
+</Link>
 </div>
 </section>
     </main>
