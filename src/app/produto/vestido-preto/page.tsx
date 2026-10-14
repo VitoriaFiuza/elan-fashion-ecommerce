@@ -6,143 +6,197 @@ import Link from "next/link";
 import { useState } from "react";
 import { useCart } from "../../../context/CartContext";
 
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
+
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+
 export default function VestidoPreto() {
- const { adicionarProduto } = useCart(); 
-  const [tamanhoSelecionado, setTamanhoSelecionado] = useState<string | null>(null);
+  const { adicionarProduto } = useCart();
+
+  const [tamanhoSelecionado, setTamanhoSelecionado] = useState<
+    string | null
+  >(null);
+
+  const [menuAberto, setMenuAberto] = useState(false);
+
+  const fotos = [
+    {
+      src: "/products/vestido-01-frente.png",
+      alt: "Vestido Preto Élan - frente",
+    },
+    {
+      src: "/products/vestido-01-costas.png",
+      alt: "Vestido Preto Élan - costas",
+    },
+    {
+      src: "/products/vestido-01-detalhe.png",
+      alt: "Vestido Preto Élan - detalhe",
+    },
+  ];
+
   function adicionarASacola() {
-  if (!tamanhoSelecionado) {
-    alert("Por favor, selecione um tamanho.");
-    return;
+    if (!tamanhoSelecionado) {
+      alert("Por favor, selecione um tamanho.");
+      return;
+    }
+
+    adicionarProduto({
+      id: "vestido-preto",
+      nome: "Vestido Preto Élan",
+      tamanho: tamanhoSelecionado,
+      preco: 599.9,
+      imagem: "/products/vestido-01-frente.png",
+      quantidade: 1,
+    });
+
+    alert(
+      `Vestido ÉLAN, tamanho ${tamanhoSelecionado}, adicionado à sacola!`
+    );
   }
 
-  adicionarProduto({
-   id: "vestido-preto",
-nome: "Vestido Preto Élan",
-tamanho: tamanhoSelecionado,
-preco: 599.90,
-imagem: "/products/vestido-01-frente.png",
-quantidade: 1,
-  });
-
-  alert(`Vestido ÉLAN, tamanho ${tamanhoSelecionado}, adicionado à sacola!`);
-}
-
   return (
-    <main className="min-h-screen bg-white">
-        <header className="flex items-center justify-between border-b border-neutral-200 px-8 py-5">
-  <a
-    href="/"
-    className="text-2xl font-semibold tracking-tight text-black"
-  >
-    ÉLAN
-  </a>
+    <main className="min-h-screen bg-white text-black">
+      {/* CABEÇALHO */}
+      <header className="relative flex items-center justify-between border-b border-neutral-200 px-4 py-5 md:px-8">
+        <button
+          type="button"
+          onClick={() => setMenuAberto(!menuAberto)}
+          className="text-2xl md:hidden"
+          aria-label={menuAberto ? "Fechar menu" : "Abrir menu"}
+          aria-expanded={menuAberto}
+        >
+          {menuAberto ? "×" : "☰"}
+        </button>
 
-  <nav className="flex gap-8 text-sm text-neutral-700">
-    <a href="/#novidades">Novidades</a>
-    <a href="/#roupas">Roupas</a>
-    <a href="/#vestidos">Vestidos</a>
-    <a href="/#curve">Curve</a>
-    <a href="/#sale">Sale</a>
-  </nav>
+        <Link
+          href="/"
+          className="text-2xl font-semibold tracking-tight"
+        >
+          ÉLAN
+        </Link>
 
-  <div className="flex gap-5 text-sm text-black">
-    <span>Buscar</span>
-    <span>Favoritos</span>
-  <Link href="/sacola">Sacola</Link>
-  </div>
-</header>
+        <nav className="hidden gap-8 text-sm text-neutral-700 md:flex">
+          <Link href="/#novidades">Novidades</Link>
+          <Link href="/#roupas">Roupas</Link>
+          <Link href="/#vestidos">Vestidos</Link>
+          <Link href="/#curve">Curve</Link>
+          <Link href="/#sale">Sale</Link>
+        </nav>
 
-      <div className="grid grid-cols-[2fr_1fr] gap-10 px-8 py-10">
+        <div className="flex items-center gap-5 text-sm">
+          <span className="hidden lg:inline">Buscar</span>
+          <span className="hidden lg:inline">Favoritos</span>
+          <Link href="/sacola">Sacola</Link>
+        </div>
 
+        {menuAberto && (
+          <nav className="absolute left-0 top-full z-20 flex w-full flex-col gap-5 border-b border-neutral-200 bg-white px-6 py-6 text-sm shadow-sm md:hidden">
+            <Link href="/#novidades">Novidades</Link>
+            <Link href="/#roupas">Roupas</Link>
+            <Link href="/#vestidos">Vestidos</Link>
+            <Link href="/#curve">Curve</Link>
+            <Link href="/#sale">Sale</Link>
+          </nav>
+        )}
+      </header>
+
+      {/* CONTEÚDO DO PRODUTO */}
+      <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-8 px-4 py-6 sm:px-6 md:gap-10 md:px-8 md:py-10 lg:grid-cols-[1fr_1fr]">
         {/* GALERIA */}
-        <section className="grid grid-cols-2 gap-2">
-          <Image
-            src="/products/vestido-01-frente.png"
-            alt="Vestido Preto Élan - frente"
-            width={1200}
-            height={1500}
-            className="w-full"
-            priority
-          />
+        <section className="w-full min-w-0">
+          <Swiper
+            modules={[Navigation, Pagination]}
+            slidesPerView={1}
+            spaceBetween={0}
+            navigation
+            pagination={{ clickable: true }}
+            loop={true}
+            grabCursor={true}
+            
+className="w-full bg-white"
 
-          <Image
-            src="/products/vestido-01-costas.png"
-            alt="Vestido Preto Élan - costas"
-            width={1200}
-            height={1500}
-            className="w-full"
-          />
+          >
+            {fotos.map((foto) => (
+              <SwiperSlide key={foto.src}>
+                <Image
+                  src={foto.src}
+                  alt={foto.alt}
+                  width={1200}
+                  height={1500}
+                  
+className="block h-[420px] w-full select-none bg-white object-contain sm:h-[550px] lg:h-[650px]"
 
-          <Image
-  src="/products/vestido-01-detalhe.png"
-  alt="Vestido Preto Élan - detalhe"
-  width={1200}
-  height={1500}
-  className="w-full"
-/>
-          
+                  draggable={false}
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </section>
 
         {/* INFORMAÇÕES DO PRODUTO */}
-        <section className="px-6">
+        <section className="w-full lg:sticky lg:top-8 lg:self-start">
           <p className="mb-3 text-xs uppercase tracking-[0.2em] text-neutral-500">
             ÉLAN
           </p>
 
-          <h1 className="text-3xl font-medium">
+          <h1 className="text-2xl font-medium leading-tight sm:text-3xl">
             Vestido Preto Élan
           </h1>
 
-          <p className="mt-4 text-lg">
-            R$ 599,90
-          </p>
+          <p className="mt-5 text-xl">R$ 599,90</p>
 
           <p className="mt-2 text-sm text-neutral-500">
             ou 6x de R$ 99,98 sem juros
           </p>
 
-          <div className="mt-10 border-t border-neutral-200 pt-6">
+          {/* TAMANHOS */}
+          <div className="mt-8 border-t border-neutral-200 pt-6">
             <p className="text-sm font-medium">
               Selecione o tamanho
             </p>
 
-            <div className="mt-4 flex gap-2">
+            <div className="mt-4 flex flex-wrap gap-2">
               {["44", "46", "48", "50", "52"].map((tamanho) => (
                 <button
-  key={tamanho}
-  type="button"
-  onClick={() => setTamanhoSelecionado(tamanho)}
-  className={`flex h-11 w-11 items-center justify-center border text-sm transition ${
-    tamanhoSelecionado === tamanho
-      ? "border-black bg-black text-white"
-      : "border-neutral-300 hover:border-black"
-  }`}
->
-  {tamanho}
-</button>
+                  key={tamanho}
+                  type="button"
+                  onClick={() => setTamanhoSelecionado(tamanho)}
+                  aria-pressed={tamanhoSelecionado === tamanho}
+                  className={`flex h-12 w-12 items-center justify-center border text-sm transition ${
+                    tamanhoSelecionado === tamanho
+                      ? "border-black bg-black text-white"
+                      : "border-neutral-300 hover:border-black"
+                  }`}
+                >
+                  {tamanho}
+                </button>
               ))}
             </div>
           </div>
 
+          {/* BOTÃO SACOLA */}
           <button
-  type="button"
- onClick={adicionarASacola}
-  className="mt-8 w-full bg-black py-4 text-sm uppercase tracking-[0.15em] text-white hover:bg-neutral-800"
->
-  Adicionar à sacola
-</button>
+            type="button"
+            onClick={adicionarASacola}
+            className="mt-8 w-full bg-black px-4 py-5 text-sm uppercase tracking-[0.12em] text-white transition hover:bg-neutral-800"
+          >
+            Adicionar à sacola
+          </button>
 
+          {/* DESCRIÇÃO */}
           <div className="mt-8 border-t border-neutral-200 pt-6">
-            <p className="text-sm leading-6 text-neutral-600">
-              Vestido preto de comprimento midi com design minimalista e caimento
-                elegante. Uma peça sofisticada e atemporal, criada para valorizar
-                 a silhueta com conforto e versatilidade.
+            <p className="text-sm leading-7 text-neutral-600">
+              Vestido preto de comprimento midi com design
+              minimalista e caimento elegante. Uma peça sofisticada
+              e atemporal, criada para valorizar a silhueta com
+              conforto e versatilidade.
             </p>
           </div>
         </section>
-
       </div>
-
     </main>
   );
 }
