@@ -41,4 +41,4 @@ Antes de gerar qualquer novo arquivo ou pasta de teste/ambiente:
 2. **Validação do `.gitignore`:** Verifique o `.gitignore` e atualize-o se a tarefa gerar novos tipos de arquivos temporários, logs ou variáveis de ambiente.
 3. **Implementação de Código:** Gere ou modifique o código-fonte seguindo os contratos definidos.
 4. **Implementação de Testes:** Crie ou atualize os arquivos de teste correspondentes.
-5. **Conclusão:** Finalize a execução notificando que o código, a suíte de testes e o `.gitignore` estão prontos para a auditoria do **Dev Reviewer**.
+5. **Conclusão:** Finalize a execução notificando que o código, a suíte de testes e o `.gitignore` estão prontos para a auditoria.

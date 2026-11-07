@@ -6,7 +6,7 @@ Loja de moda moderna desenvolvida em Next.js com App Router, TypeScript, Tailwin
 
 - **Vitrine de Produtos**: listagem dinâmica do catálogo com fallback seguro.
 - **Página de Detalhes**: visualização de imagens, tamanhos e especificações do produto.
-- **Sacola de Compras**: gerenciamento local com persistência no navegador via `localStorage`.
+- **Sacola de Compras**: gerenciamento local com persistência no navegador via `localStorage` e simulação funcional de frete e prazos por CEP e região com frete grátis acima de R$ 400.
 - **Checkout & Frete**: cálculo e busca de endereço via ViaCEP com validações.
 - **Catálogo Integrado**: servido via Route Handlers nativos do Next.js (`/api/produtos`) com suporte a fallback de API externa via `NEXT_PUBLIC_API_URL`.
 

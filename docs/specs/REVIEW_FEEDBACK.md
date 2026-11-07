@@ -1,23 +1,22 @@
 # Feedback de Code Review (APROVADO)
 
 ## Resumo da Auditoria
-- **Data/Hora:** 2026-11-07 17:25:30-03:00
+- **Data/Hora:** 2026-11-07T18:18:20-03:00
 - **Status:** APPROVED
-- **Comando Executado:** `npm test`
-- **Resumo:** Todos os testes unitários e de integração passaram com sucesso. README.md e documentações atualizados.
+- **Comando Executado:** `npm test` & `next build`
+- **Resultado dos Testes:** 27 testes executados com 100% de aprovação (27 pass / 0 fail).
 
-## Verificações Realizadas
-1. **Auditoria Estática**:
-   - Validação da reativação da sacola em `src/app/produto/[id]/page.tsx` usando `useCart` (`adicionarProduto`), validação de tamanho selecionado e feedback de confirmação com link direto para `/sacola`.
-   - Validação dos badges de contagem de itens na sacola no cabeçalho e navegação mobile em `src/app/page.tsx` e `src/app/produto/[id]/page.tsx`.
-   - Validação da parada do fluxo no checkout (`src/app/checkout/page.tsx`), apresentando aviso claro de encerramento do fluxo demonstrativo na etapa de pagamento e redirecionamento para confirmação.
-2. **Execução da Suíte de Testes**:
-   - `npm test` executado com 100% de sucesso (18/18 testes passando):
-     - `src/lib/catalogo.test.mts` (leitura de catálogo, tratamento de JSON corrompido, arquivo ausente) ✅
-     - `src/services/api.test.mts` (resolução de URLs de catálogo e compatibilidade de ambiente) ✅
-     - `src/app/api/produtos/rotas.test.mts` (GET /api/produtos e GET /api/produtos/[id]) ✅
-     - `src/context/CartContext.test.mts` (adição de itens, segregação por tamanho, alteração de quantidade e remoção) ✅
-3. **Build e Compilação**:
-   - `next build --webpack` compilado com sucesso com todas as rotas estáticas e dinâmicas (`/`, `/produto/[id]`, `/sacola`, `/checkout`, `/pedido-confirmado`, `/api/produtos`, `/api/produtos/[id]`).
-4. **Atualizações de Documentação**:
-   - `docs/specs/REVIEW_FEEDBACK.md`: Registrado status APPROVED.
+## Itens Validados
+1. **Módulo de Frete (`src/lib/frete.ts`):**
+   - Sanitização e máscara de CEP (`limparCep`, `formatarCep`).
+   - Mapeamento de UFs por regiões brasileiras.
+   - Cálculo determinístico de prazos e valores para opções "Normal" e "Expresso".
+   - Regra de frete grátis aplicada para pedidos acima de R$ 400 na modalidade normal.
+2. **Interface da Sacola (`src/app/sacola/page.tsx`):**
+   - Inclusão do campo de cálculo de frete por CEP com feedback de carregamento e mensagens amigáveis.
+   - Integração com ViaCEP para detecção de UF/cidade com fallback regional resiliente.
+   - Seleção interativa da modalidade de entrega com atualização dinâmica do valor do frete e total final do pedido.
+   - Indicador de meta para frete grátis ou congratulação por tê-lo atingido.
+3. **Build e Testes:**
+   - Suíte de testes unitários integrada ao `package.json` e passando com sucesso.
+   - Build de produção compilando todas as páginas estáticas e dinâmicas com sucesso.

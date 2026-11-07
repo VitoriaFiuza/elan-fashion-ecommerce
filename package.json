@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "tsx --test src/lib/catalogo.test.mts src/services/api.test.mts src/app/api/produtos/rotas.test.mts src/context/CartContext.test.mts"
+    "test": "tsx --test src/lib/catalogo.test.mts src/services/api.test.mts src/app/api/produtos/rotas.test.mts src/context/CartContext.test.mts src/lib/filtro-produtos.test.mts src/lib/frete.test.mts"
   },
   "dependencies": {
     "next": "16.3.6",
