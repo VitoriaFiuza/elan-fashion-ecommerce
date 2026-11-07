@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useCart } from "../context/CartContext";
 import {
   Produto,
   obterProdutoPorId,
@@ -53,6 +54,7 @@ const PRODUTOS_FALLBACK: Produto[] = [
 ];
 
 export default function Home() {
+  const { quantidadeTotal } = useCart();
   const [menuAberto, setMenuAberto] = useState(false);
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [carregando, setCarregando] = useState(true);
@@ -152,8 +154,16 @@ export default function Home() {
           <span className="hidden md:inline cursor-pointer text-neutral-600 hover:text-black">
             Favoritos
           </span>
-          <Link href="/sacola" className="font-medium hover:opacity-75 transition">
+          <Link
+            href="/sacola"
+            className="relative inline-flex items-center gap-2 font-medium hover:opacity-75 transition"
+          >
             Sacola
+            {quantidadeTotal > 0 && (
+              <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-black px-1.5 text-[11px] font-semibold text-white">
+                {quantidadeTotal}
+              </span>
+            )}
           </Link>
         </div>
 
@@ -194,8 +204,14 @@ export default function Home() {
               <Link
                 href="/sacola"
                 onClick={() => setMenuAberto(false)}
+                className="flex items-center justify-between"
               >
-                Minha sacola
+                <span>Minha sacola</span>
+                {quantidadeTotal > 0 && (
+                  <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-black px-1.5 text-[11px] font-semibold text-white">
+                    {quantidadeTotal}
+                  </span>
+                )}
               </Link>
             </div>
           </nav>

@@ -12,6 +12,7 @@ import {
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import ProductImageZoom from "../../../components/ProductImageZoom";
+import { useCart } from "../../../context/CartContext";
 import {
   Produto,
   obterProdutoPorId,
@@ -62,6 +63,7 @@ const PRODUTOS_CONTINGENCIA: Record<string, Produto> = {
 export default function PaginaProduto() {
   const params = useParams();
   const id = params?.id as string;
+  const { adicionarProduto, quantidadeTotal } = useCart();
 
   const [produto, setProduto] = useState<Produto | null>(null);
   const [carregando, setCarregando] = useState(true);
@@ -209,16 +211,29 @@ export default function PaginaProduto() {
     gestoRef.current.distancia = 0;
   }
 
-  // O carrinho permanece não funcional conforme solicitado
   function lidarComAdicionarSacola() {
+    if (!produto) return;
+
     if (!tamanhoSelecionado) {
       setMensagemSacola("Por favor, selecione um tamanho antes de continuar.");
       return;
     }
-    setMensagemSacola("Aviso: Funcionalidade de sacola temporariamente desativada para ajustes posteriores.");
-    setTimeout(() => {
-      setMensagemSacola("");
-    }, 4500);
+
+    const imagemPrincipal =
+      produto.imagem && produto.imagem.length > 0
+        ? getProductImageUrl(produto.imagem[0])
+        : "/products/000011.png";
+
+    adicionarProduto({
+      id: String(produto.id),
+      nome: produto.nome,
+      tamanho: tamanhoSelecionado,
+      preco: produto.valor,
+      imagem: imagemPrincipal,
+      quantidade: 1,
+    });
+
+    setMensagemSacola("Produto adicionado à sacola com sucesso!");
   }
 
   // Prepara fotos do produto associadas aos números/nomes vindos do backend
@@ -286,6 +301,11 @@ export default function PaginaProduto() {
             className="relative inline-flex items-center gap-2 hover:opacity-75 transition font-medium"
           >
             Sacola
+            {quantidadeTotal > 0 && (
+              <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-black px-1.5 text-[11px] font-semibold text-white">
+                {quantidadeTotal}
+              </span>
+            )}
           </Link>
         </div>
 
@@ -449,9 +469,19 @@ export default function PaginaProduto() {
                 <div
                   role="status"
                   aria-live="polite"
-                  className="mt-3 rounded border border-neutral-300 bg-neutral-50 p-3 text-center text-xs text-neutral-700 animate-fadeIn"
+                  className="mt-3 rounded border border-neutral-300 bg-neutral-50 p-3 text-center text-xs text-neutral-800 animate-fadeIn"
                 >
-                  {mensagemSacola}
+                  <p className="font-medium">{mensagemSacola}</p>
+                  {mensagemSacola.includes("sucesso") && (
+                    <div className="mt-2 flex items-center justify-center gap-3">
+                      <Link
+                        href="/sacola"
+                        className="inline-block bg-black px-4 py-2 text-[11px] uppercase tracking-wider text-white hover:bg-neutral-800 transition"
+                      >
+                        Ver sacola
+                      </Link>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
