@@ -1,0 +1,32 @@
+---
+description: Como validar mudanças no front e na API Flask
+alwaysApply: true
+---
+
+# Testes
+
+Escopo pequeno. Não refatore o que a tarefa não pediu. Não commite `.env` nem segredos.
+
+## API (Flask)
+
+Depois de mudar `backend/app.py` ou o formato de `backend/produtos.json`:
+
+```bash
+cd backend
+python test_api.py
+```
+
+A suíte cobre listar, obter, criar, atualizar e remover. Confira 400 (campo faltando), 404 (id inexistente) e 409 (id duplicado).
+
+## Front (Next.js)
+
+Suba os dois processos antes de mexer no fluxo da loja:
+
+```bash
+npm run dev                  # http://localhost:3000
+cd backend && python app.py  # http://127.0.0.1:5000
+```
+
+Mudança de UI, rota ou sacola: abra no navegador o fluxo tocado (vitrine → produto → sacola → checkout → pedido confirmado). Confira também o estado vazio e a API desligada (a página continua, com lista vazia ou produto ausente).
+
+`npm run lint` quando o diff for em TypeScript ou TSX.

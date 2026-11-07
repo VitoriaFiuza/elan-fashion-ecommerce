@@ -1,0 +1,30 @@
+---
+description: Stack e convenções do Elan Fashion (Next.js + Flask)
+alwaysApply: true
+---
+
+# Stack
+
+Loja de moda. Interface em português (pt-BR). Preços em BRL via `formatarPreco` em `src/services/api.ts`.
+
+- Front: Next.js 16 (App Router em `src/`), React 19, TypeScript, Tailwind CSS 4, Swiper. Alias `@/*` → `src/*`.
+- API: Flask em `backend/app.py`, dados em `backend/produtos.json`. Porta 5000.
+- Cliente: só `src/services/api.ts`. Base `NEXT_PUBLIC_API_URL` ou `http://localhost:5000`.
+- Sacola: `src/context/CartContext.tsx`, já no `layout`. Não duplicar estado de carrinho.
+
+Antes de usar uma API do Next.js, leia `node_modules/next/dist/docs/`. Esta versão diverge do Next.js antigo.
+
+## Onde mexer
+
+- Vitrine `src/app/page.tsx`, detalhe `src/app/produto/[id]/page.tsx`, sacola `src/app/sacola/page.tsx`, checkout `src/app/checkout/page.tsx`, confirmação `src/app/pedido-confirmado/page.tsx`.
+- UI compartilhada em `src/components/`.
+- Imagem de produto: nome sem extensão vira `/products/<nome>.png`.
+
+Produto: `id`, `nome`, `descricao`, `valor`, `imagem` (string[]), `tamanhos`. Endpoints `GET/POST /produtos` e `GET/PUT/DELETE /produtos/<id>`.
+
+Se o backend falhar, devolva lista vazia ou `null`. Não quebre a página.
+
+```ts
+const produtos = await listarProdutos(); // [] se a API estiver fora
+const preco = formatarPreco(produto.valor); // "R$ 320,00"
+```

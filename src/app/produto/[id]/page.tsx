@@ -335,7 +335,7 @@ export default function PaginaProduto() {
           <section ref={galeriaRef} className="w-full min-w-0">
             {usandoContingencia && (
               <div className="mb-4 rounded border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
-                Aviso: Backend Flask não detectado em localhost:5000. Exibindo dados de demonstração integrados.
+                Aviso: o catálogo não respondeu. Exibindo dados de demonstração.
               </div>
             )}
 
