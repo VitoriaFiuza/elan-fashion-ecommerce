@@ -1,77 +1,71 @@
-# Especificação Técnica: Menu Funcional e Categorias de Roupas / Vestidos
+# Especificação Técnica: Cálculo de Frete na Sacola (Task #06)
 
 ## Objetivo da Tarefa
-Tornar a navegação do cabeçalho totalmente funcional de acordo com os requisitos:
-1. **Remoção de Itens Inativos:** Remover as opções "Curve" e "Sale" dos menus (desktop e mobile).
-2. **Novidades:** Apontar para a página inicial (`/` ou `/#novidades`), exibindo a vitrine principal.
-3. **Roupas:** Criar/configurar rota dedicada (`/roupas`) ou filtro que liste as peças de vestuário que **não** sejam vestidos (ex: Blazers, Calças, Camisas).
-4. **Vestidos:** Criar/configurar rota dedicada (`/vestidos`) que liste **apenas** vestidos (ex: Peças cujo nome contenha "vestido").
-5. **Consistência Visual e Header Compartilhado:** Manter o layout e identidade visual idênticos ao padrão do site (tipografia, espaçamento, comportamento de sacola e menu mobile). Unificar o cabeçalho preferencialmente em componente reutilizável (`src/components/Header.tsx` ou similar) para que as páginas (`/`, `/roupas`, `/vestidos`, `/produto/[id]`) compartilhem o mesmo menu funcional e coerente.
-
----
+Implementar o cálculo funcional de frete na página de sacola/carrinho (`src/app/sacola/page.tsx`), permitindo que o usuário digite um CEP válido (com máscara ou 8 dígitos), consulte o endereço/região e obtenha opções de frete simuladas baseadas em regras de negócio determinísticas (por região/UF ou faixa de CEP) e política de frete grátis para compras acima de R$ 400.
+O usuário pode selecionar uma das opções de frete (ex: Normal / Expresso) e o valor selecionado deve ser somado dinamicamente ao valor total do resumo do pedido na sacola.
 
 ## Escopo de Arquivos
+- **Criar:** `src/lib/frete.ts` (funções puras de cálculo, sanitização de CEP, regras de prazo e valor por UF/região, regras de frete grátis).
+- **Criar:** `src/lib/frete.test.mts` (testes unitários com a suíte de testes do projeto).
+- **Modificar:** `src/app/sacola/page.tsx` (interface com campo de CEP, botão/gatilho de cálculo, listagem de opções com radio/botão para seleção de frete, feedback de erro/carregamento, e atualização dinâmica do total no resumo do pedido).
+- **Modificar:** `package.json` (incluir `src/lib/frete.test.mts` no script `test`).
 
-### Criar:
-- `src/components/Header.tsx`: Componente de cabeçalho unificado com links para `Novidades` (`/`), `Roupas` (`/roupas`), `Vestidos` (`/vestidos`), Sacola e menu mobile responsivo.
-- `src/app/roupas/page.tsx`: Página de listagem contendo apenas roupas que não sejam vestidos.
-- `src/app/vestidos/page.tsx`: Página de listagem contendo apenas vestidos.
-- `src/lib/filtro-produtos.ts` (ou funções utilitárias no serviço): Funções de filtragem por categoria para permitir testes unitários limpos.
-- `src/lib/filtro-produtos.test.mts`: Testes unitários para regras de separação de "roupas sem vestidos" e "apenas vestidos".
-
-### Modificar:
-- `src/app/page.tsx`: Atualizar navegação desktop/mobile para usar a nova estrutura de menu (sem Curve/Sale, apontando para `/`, `/roupas`, `/vestidos`).
-- `src/app/produto/[id]/page.tsx`: Alinhar navegação desktop/mobile para a nova estrutura de menu.
-- `docs/ARCHITECTURE.md`: Registrar as novas rotas (`/roupas` e `/vestidos`) na tabela de rotas do App Router.
-- `docs/TASK_BOARD.md`: Atualizar status para Task #05 em progresso.
-
----
-
-## Contratos e Interfaces
-
-### Regra de Filtragem de Produtos:
+## Contratos e Interfaces (`src/lib/frete.ts`)
 ```typescript
-export function filtrarRoupas(produtos: Produto[]): Produto[] {
-  // Retorna itens cuja categoria/nome NÃO seja vestido
-  return produtos.filter(
-    (p) => !p.nome.toLowerCase().includes("vestido")
-  );
+export interface OpcaoFrete {
+  id: string; // 'economico' | 'expresso'
+  nome: string; // 'Normal' | 'Expresso'
+  prazoDias: number; // ex: 5
+  valor: number; // ex: 25.00 (ou 0 se frete grátis elegível)
+  gratis: boolean;
 }
 
-export function filtrarVestidos(produtos: Produto[]): Produto[] {
-  // Retorna itens cujo nome/descrição represente vestido
-  return produtos.filter(
-    (p) => p.nome.toLowerCase().includes("vestido")
-  );
+export interface ResultadoFrete {
+  valido: boolean;
+  uf?: string;
+  cidade?: string;
+  logradouro?: string;
+  opcoes: OpcaoFrete[];
+  erro?: string;
 }
+
+export function limparCep(cep: string): string;
+export function formatarCep(cep: string): string;
+export function calcularOpcoesFrete(uf: string, subtotal: number): OpcaoFrete[];
 ```
 
-### Estrutura de Navegação (Links):
-- **Novidades:** `/` (ou `/#novidades`)
-- **Roupas:** `/roupas`
-- **Vestidos:** `/vestidos`
-- Itens removidos: `Curve`, `Sale`
-
----
+## Regras de Negócio do Frete
+1. **Sanitização de CEP:** Somente dígitos, exatamente 8 caracteres numéricos para consulta válida.
+2. **Tabela de Frete por Região:**
+   - **Sudeste (SP, RJ, MG, ES):**
+     - Normal: R$ 19,90 (prazo: 3 a 5 dias úteis)
+     - Expresso: R$ 34,90 (prazo: 1 a 2 dias úteis)
+   - **Sul (PR, SC, RS):**
+     - Normal: R$ 24,90 (prazo: 4 a 6 dias úteis)
+     - Expresso: R$ 39,90 (prazo: 2 a 3 dias úteis)
+   - **Centro-Oeste (DF, GO, MT, MS):**
+     - Normal: R$ 29,90 (prazo: 5 a 8 dias úteis)
+     - Expresso: R$ 49,90 (prazo: 2 a 4 dias úteis)
+   - **Nordeste (BA, PE, CE, RN, PB, AL, SE, PI, MA):**
+     - Normal: R$ 34,90 (prazo: 6 a 10 dias úteis)
+     - Expresso: R$ 59,90 (prazo: 3 a 5 dias úteis)
+   - **Norte (AM, PA, AC, RO, RR, AP, TO):**
+     - Normal: R$ 44,90 (prazo: 8 a 14 dias úteis)
+     - Expresso: R$ 69,90 (prazo: 4 a 7 dias úteis)
+   - **Demais / Desconhecido:**
+     - Normal: R$ 29,90 (prazo: 7 dias úteis)
+     - Expresso: R$ 49,90 (prazo: 3 dias úteis)
+3. **Frete Grátis:** Subtotal a partir de R$ 400,00 concede frete grátis na modalidade Normal (R$ 0,00). A opção Expresso permanece paga com seu valor padrão.
+4. **Comportamento na Sacola:**
+   - Se nenhuma opção de frete foi calculada/selecionada: Frete exibido como "A calcular", Subtotal e Total são iguais.
+   - Ao calcular o frete com CEP válido: seleciona por padrão a modalidade "Normal" (mais econômica ou grátis).
+   - O usuário pode alternar entre "Normal" e "Expresso".
+   - O Total a pagar no Resumo do Pedido reflete Subtotal + Frete selecionado.
+   - O botão "Finalizar compra" continua levando ao checkout.
 
 ## Critérios de Aceite e Testes
-
-1. **Menu Desktop e Mobile:**
-   - Não devem mais existir links para "Curve" ou "Sale" no header desktop ou drawer mobile.
-   - Os links presentes devem ser: "Novidades", "Roupas", "Vestidos", além do acesso à "Sacola".
-
-2. **Página de Roupas (`/roupas`):**
-   - Deve exibir a grade de produtos mantendo a mesma estilização da home (grid, tipografia, cards, badges de preço formatado).
-   - Não deve conter vestidos (ex.: item ID 4 "vestido" filtrado para fora).
-   - Se o catálogo retornar itens, deve listar apenas blazer, calça, camisa, etc.
-
-3. **Página de Vestidos (`/vestidos`):**
-   - Deve exibir a grade de produtos mantendo a mesma estilização da home.
-   - Deve conter apenas itens identificados como vestidos (ex.: ID 4 "vestido").
-
-4. **Tratamento de Contingência / Fallback:**
-   - Ambas as páginas devem respeitar o fallback gracioso caso a API/backend não responda, exibindo os dados mockados correspondentes sem quebrar a tela.
-
-5. **Suíte de Testes:**
-   - Teste unitário cobrindo `filtrarRoupas` e `filtrarVestidos` com diferentes variações de nomes (maiúsculas/minúsculas).
-   - Execução completa do `npm test` aprovada com zero falhas.
+1. `limparCep` e `formatarCep` formatam e higienizam entradas numéricas e com máscara.
+2. `calcularOpcoesFrete` calcula valores e prazos corretos para diferentes UFs (ex: SP no Sudeste, RS no Sul, BA no Nordeste, etc.).
+3. `calcularOpcoesFrete` zera o frete normal quando subtotal >= 400 (frete grátis), mas mantém expresso pago.
+4. A UI da sacola permite digitar CEP, exibe indicador de carregamento e mensagens de erro caso o CEP seja inválido ou não encontrado.
+5. A UI da sacola atualiza dinamicamente o valor do frete e o total final quando uma opção de frete é escolhida.
