@@ -251,7 +251,7 @@ export default function Home() {
         {/* ALERTA INFORMATIVO SE ESTIVER SEM BACKEND */}
         {usandoFallback && !carregando && (
           <div className="mb-6 rounded border border-amber-200 bg-amber-50 px-4 py-2 text-xs text-amber-800">
-            Aviso: O backend Flask (porta 5000) não respondeu no momento. Exibindo dados integrados de demonstração.
+            Aviso: o catálogo não respondeu. Exibindo dados de demonstração.
           </div>
         )}
 

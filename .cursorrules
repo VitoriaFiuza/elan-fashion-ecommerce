@@ -1,0 +1,36 @@
+# Elan Fashion — regras do projeto
+
+Loja de moda. Interface em português (pt-BR), preços em BRL.
+
+## Stack
+
+- Frontend: Next.js 16 (App Router em `src/`), React 19, TypeScript, Tailwind CSS 4, Swiper.
+- Backend: Flask em `backend/app.py`, dados em `backend/produtos.json`.
+- API do front: `src/services/api.ts`. Base URL: `NEXT_PUBLIC_API_URL` ou `http://localhost:5000`.
+
+Antes de usar APIs do Next.js, confira a doc em `node_modules/next/dist/docs/`. Esta versão diverge do Next.js mais antigo.
+
+## Estrutura
+
+- `src/app/page.tsx` — vitrine
+- `src/app/produto/[id]/page.tsx` — detalhe
+- `src/app/sacola/page.tsx` — sacola
+- `src/app/checkout/page.tsx` — checkout
+- `src/app/pedido-confirmado/page.tsx` — confirmação
+- `src/context/CartContext.tsx` — estado da sacola (envolver a árvore no layout)
+- `src/components/` — componentes de UI
+- Imagens públicas em `/products/` (nomes sem extensão viram `.png`)
+
+## Produto
+
+Campos: `id`, `nome`, `descricao`, `valor`, `imagem` (lista de strings), `tamanhos`.
+Endpoints: `GET/POST /produtos`, `GET/PUT/DELETE /produtos/<id>`.
+
+## Como trabalhar
+
+- Código e textos da interface em português. Preço com `formatarPreco` de `src/services/api.ts`.
+- Chamadas ao backend passam por `src/services/api.ts`. Trate backend fora do ar sem quebrar a página.
+- Mudança de UI: confira no navegador o fluxo tocado (vitrine, produto, sacola, checkout).
+- Backend: rode `python test_api.py` em `backend/` depois de alterar rotas ou `produtos.json`.
+- Front: `npm run dev` (porta 3000). API: `python app.py` em `backend/` (porta 5000).
+- Escopo pequeno. Não refatore o que a tarefa não pediu. Não commite `.env` nem segredos.

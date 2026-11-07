@@ -7,8 +7,22 @@ export interface Produto {
   tamanhos: Array<string | number>;
 }
 
-export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+/**
+ * Base do catálogo. Sem NEXT_PUBLIC_API_URL, as chamadas ficam na mesma origem (`/api`).
+ * A variável continua como escape se a API voltar a ser externa.
+ */
+export function resolverBaseApi(valor = process.env.NEXT_PUBLIC_API_URL): string {
+  const base = valor?.trim();
+  if (!base) return "/api";
+  return base.replace(/\/+$/, "");
+}
+
+export const API_BASE_URL = resolverBaseApi();
+
+export function urlCatalogo(id?: number | string, base = API_BASE_URL): string {
+  if (id === undefined) return `${base}/produtos`;
+  return `${base}/produtos/${encodeURIComponent(String(id))}`;
+}
 
 /**
  * Converte o identificador da imagem para a rota pública correta em /products.
@@ -51,13 +65,13 @@ export function formatarPreco(valor: number): string {
 }
 
 /**
- * Busca um produto específico pelo ID no backend Flask (GET /produtos/:id).
+ * Busca um produto específico pelo ID (GET /produtos/:id).
  */
 export async function obterProdutoPorId(
   id: number | string
 ): Promise<Produto | null> {
   try {
-    const res = await fetch(`${API_BASE_URL}/produtos/${id}`, {
+    const res = await fetch(urlCatalogo(id), {
       cache: "no-store",
     });
 
@@ -75,11 +89,11 @@ export async function obterProdutoPorId(
 }
 
 /**
- * Busca todos os produtos do backend Flask (GET /produtos).
+ * Busca todos os produtos do catálogo (GET /produtos).
  */
 export async function listarProdutos(): Promise<Produto[]> {
   try {
-    const res = await fetch(`${API_BASE_URL}/produtos`, {
+    const res = await fetch(urlCatalogo(), {
       cache: "no-store",
     });
 
@@ -99,7 +113,7 @@ export async function listarProdutos(): Promise<Produto[]> {
 /**
  * Garante que a estrutura do produto do backend venha no formato esperado pelo frontend.
  */
-function normalizarProduto(item: any): Produto {
+function normalizarProduto(item: Record<string, unknown>): Produto {
   let imagens: string[] = [];
 
   if (Array.isArray(item.imagem)) {
@@ -112,7 +126,7 @@ function normalizarProduto(item: any): Produto {
   }
 
   // Trata o campo tamanhos (pode vir como 'tamanhos' ou 'tamanho', array ou string)
-  let rawTamanhos = item.tamanhos ?? item.tamanho ?? [];
+  const rawTamanhos = item.tamanhos ?? item.tamanho ?? [];
   let tamanhos: Array<string | number> = [];
 
   if (Array.isArray(rawTamanhos)) {
@@ -125,9 +139,9 @@ function normalizarProduto(item: any): Produto {
   }
 
   return {
-    id: item.id,
-    nome: item.nome || "Produto sem nome",
-    descricao: item.descricao || "",
+    id: (item.id as string | number) ?? "",
+    nome: typeof item.nome === "string" ? item.nome : "Produto sem nome",
+    descricao: typeof item.descricao === "string" ? item.descricao : "",
     valor: Number(item.valor) || 0,
     imagem: imagens,
     tamanhos: tamanhos,
