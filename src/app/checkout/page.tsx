@@ -252,23 +252,33 @@ export default function Checkout() {
             </section>
 
             {/* PAGAMENTO */}
-            <section>
-              <h2 className="mb-6 border-b pb-4 text-xl">
+            <section className="rounded border border-neutral-200 bg-neutral-50/50 p-6">
+              <h2 className="mb-4 border-b border-neutral-200 pb-3 text-xl font-medium">
                 Pagamento
               </h2>
 
-              <p className="text-sm leading-6 text-neutral-500">
-                Esta é uma versão demonstrativa do checkout.
-                Nenhum pagamento real será processado.
-              </p>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="inline-block h-2 w-2 rounded-full bg-amber-500" />
+                  <p className="text-xs font-semibold uppercase tracking-wider text-neutral-800">
+                    Limite do Fluxo Demonstrativo
+                  </p>
+                </div>
+                <p className="text-sm leading-6 text-neutral-600">
+                  Esta é uma versão demonstrativa do checkout da ÉLAN. A jornada de compra é concluída nesta etapa e <strong>nenhuma cobrança ou transação financeira real</strong> será processada.
+                </p>
+                <div className="mt-3 rounded border border-neutral-200 bg-white p-4 text-xs text-neutral-500">
+                  Ao clicar no botão abaixo, o pedido simulado será registrado apenas em sessão para confirmação visual da experiência.
+                </div>
+              </div>
             </section>
 
             <button
               type="submit"
               disabled={produtos.length === 0 || buscandoCep}
-              className="w-full bg-black py-4 text-sm uppercase tracking-widest text-white hover:bg-neutral-800 disabled:cursor-not-allowed disabled:bg-neutral-400"
+              className="w-full bg-black py-4 text-sm uppercase tracking-widest text-white hover:bg-neutral-800 disabled:cursor-not-allowed disabled:bg-neutral-400 transition"
             >
-              Continuar pedido
+              Confirmar pedido demonstrativo
             </button>
           </form>
 

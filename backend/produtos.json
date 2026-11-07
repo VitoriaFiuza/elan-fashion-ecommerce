@@ -1,0 +1,75 @@
+[
+  {
+    "id": 1,
+    "nome": "Blazer estruturado Élan",
+    "descricao": "Blazer de alfaiataria com modelagem estruturada da Élan",
+    "valor": 699.9,
+    "imagem": [
+      "000011",
+      "000012",
+      "000013"
+    ],
+    "tamanhos": [
+      40,
+      42,
+      44,
+      46,
+      52,
+      60
+    ]
+  },
+  {
+    "id": 2,
+    "nome": "Calça de Alfaiataria",
+    "descricao": "Calça de alfaiataria de cintura alta com caimento",
+    "valor": 459,
+    "imagem": [
+      "000021",
+      "000022",
+      "000023"
+    ],
+    "tamanhos": [
+      40,
+      42,
+      44,
+      46,
+      52
+    ]
+  },
+  {
+    "id": 3,
+    "nome": "Camisa",
+    "descricao": "camisa de alfaiataria de cintura alta com caimento",
+    "valor": 459,
+    "imagem": [
+      "000031",
+      "000032",
+      "000033"
+    ],
+    "tamanhos": [
+      40,
+      42,
+      44,
+      46,
+      52
+    ]
+  },
+  {
+    "id": 4,
+    "nome": "vestido",
+    "descricao": "vestido de alfaiataria de cintura alta com caimento",
+    "valor": 459,
+    "imagem": [
+      "000041",
+      "000042",
+      "000043"
+    ],
+    "tamanhos": [
+      40,
+      42,
+      44,
+      46,
+      52
+    ]
+  }
+]
