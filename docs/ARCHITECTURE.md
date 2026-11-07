@@ -28,7 +28,9 @@ Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4 e Swiper.
 
 | Rota | Arquivo | Função |
 | --- | --- | --- |
-| `/` | `src/app/page.tsx` | Vitrine |
+| / | src/app/page.tsx | Vitrine / Novidades |
+| /roupas | src/app/roupas/page.tsx | Catálogo de roupas (exceto vestidos) |
+| /vestidos | src/app/vestidos/page.tsx | Catálogo dedicado a vestidos |
 | `/produto/[id]` | `src/app/produto/[id]/page.tsx` | Detalhe do produto |
 | `/sacola` | `src/app/sacola/page.tsx` | Sacola |
 | `/checkout` | `src/app/checkout/page.tsx` | Checkout |

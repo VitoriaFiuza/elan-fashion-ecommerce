@@ -12,6 +12,7 @@ import {
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import ProductImageZoom from "../../../components/ProductImageZoom";
+import Header from "../../../components/Header";
 import { useCart } from "../../../context/CartContext";
 import {
   Produto,
@@ -71,7 +72,6 @@ export default function PaginaProduto() {
   const [usandoContingencia, setUsandoContingencia] = useState(false);
 
   const [tamanhoSelecionado, setTamanhoSelecionado] = useState<string | null>(null);
-  const [menuAberto, setMenuAberto] = useState(false);
   const [mensagemSacola, setMensagemSacola] = useState("");
 
   // Foto ampliada em tela cheia e zoom
@@ -252,73 +252,8 @@ export default function PaginaProduto() {
 
   return (
     <main className="min-h-screen bg-white text-black">
-      {/* CABEÇALHO */}
-      <header className="relative flex items-center justify-between border-b border-neutral-200 px-4 py-5 md:px-8">
-        <button
-          type="button"
-          onClick={() => setMenuAberto(!menuAberto)}
-          className="text-2xl md:hidden"
-          aria-label={menuAberto ? "Fechar menu" : "Abrir menu"}
-          aria-expanded={menuAberto}
-        >
-          {menuAberto ? "×" : "☰"}
-        </button>
-
-        <Link
-          href="/"
-          className="text-2xl font-semibold tracking-tight uppercase"
-        >
-          ÉLAN
-        </Link>
-
-        <nav className="hidden gap-8 text-sm text-neutral-700 md:flex">
-          <Link href="/#novidades" className="hover:text-black transition">
-            Novidades
-          </Link>
-          <Link href="/#roupas" className="hover:text-black transition">
-            Roupas
-          </Link>
-          <Link href="/#vestidos" className="hover:text-black transition">
-            Vestidos
-          </Link>
-          <Link href="/#curve" className="hover:text-black transition">
-            Curve
-          </Link>
-          <Link href="/#sale" className="hover:text-black transition">
-            Sale
-          </Link>
-        </nav>
-
-        <div className="flex items-center gap-5 text-sm">
-          <span className="hidden lg:inline cursor-pointer text-neutral-600 hover:text-black">
-            Buscar
-          </span>
-          <span className="hidden lg:inline cursor-pointer text-neutral-600 hover:text-black">
-            Favoritos
-          </span>
-          <Link
-            href="/sacola"
-            className="relative inline-flex items-center gap-2 hover:opacity-75 transition font-medium"
-          >
-            Sacola
-            {quantidadeTotal > 0 && (
-              <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-black px-1.5 text-[11px] font-semibold text-white">
-                {quantidadeTotal}
-              </span>
-            )}
-          </Link>
-        </div>
-
-        {menuAberto && (
-          <nav className="absolute left-0 top-full z-20 flex w-full flex-col gap-5 border-b border-neutral-200 bg-white px-6 py-6 text-sm shadow-sm md:hidden">
-            <Link href="/#novidades">Novidades</Link>
-            <Link href="/#roupas">Roupas</Link>
-            <Link href="/#vestidos">Vestidos</Link>
-            <Link href="/#curve">Curve</Link>
-            <Link href="/#sale">Sale</Link>
-          </nav>
-        )}
-      </header>
+      {/* CABEÇALHO COMPARTILHADO */}
+      <Header />
 
       {/* ESTADO DE CARREGANDO */}
       {carregando && (
