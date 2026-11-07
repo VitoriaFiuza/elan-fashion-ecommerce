@@ -51,3 +51,5 @@ npm test
 - [Arquitetura do Projeto](docs/ARCHITECTURE.md)
 - [Quadro de Tarefas e Planejamento Vercel](docs/TASK_BOARD.md)
 - [Feedback de Code Review](docs/specs/REVIEW_FEEDBACK.md)
+
+- url para homologação: https://elan-fashion-ecommerce-git-homologacao-elan-fashion.vercel.app/
