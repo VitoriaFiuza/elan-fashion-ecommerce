@@ -26,6 +26,9 @@ export default function Sacola() {
   const [localidadeEntrega, setLocalidadeEntrega] = useState<string | null>(null);
   const [opcoesFrete, setOpcoesFrete] = useState<OpcaoFrete[]>([]);
   const [opcaoSelecionadaId, setOpcaoSelecionadaId] = useState<string | null>(null);
+  const [mensagemIndisponivel, setMensagemIndisponivel] = useState("");
+
+  const cepValido = limparCep(cep).length === 8 && opcoesFrete.length > 0 && !erroFrete;
 
   const subtotal = produtos.reduce(
     (soma, produto) =>
@@ -69,6 +72,21 @@ export default function Sacola() {
     const formatado = formatarCep(valor);
     setCep(formatado);
     setErroFrete("");
+    setMensagemIndisponivel("");
+    if (limparCep(valor).length !== 8) {
+      setOpcoesFrete([]);
+      setLocalidadeEntrega(null);
+      setOpcaoSelecionadaId(null);
+    }
+  }
+
+  function handleFinalizarCompra() {
+    if (!cepValido) {
+      return;
+    }
+    setMensagemIndisponivel(
+      "estamos melhorando o site! Area de concluir compra ainda não esta disponivel"
+    );
   }
 
   async function consultarFrete(e?: FormEvent) {
@@ -439,12 +457,23 @@ export default function Sacola() {
                 )}
               </div>
 
-              <Link
-                href="/checkout"
-                className="mt-8 block w-full bg-black px-4 py-5 text-center text-sm uppercase tracking-[0.12em] text-white transition hover:bg-neutral-800"
+              {mensagemIndisponivel && (
+                <div
+                  role="alert"
+                  className="mt-6 border border-amber-300 bg-amber-50 p-4 text-center text-xs leading-5 text-amber-900"
+                >
+                  <p className="font-medium">{mensagemIndisponivel}</p>
+                </div>
+              )}
+
+              <button
+                type="button"
+                onClick={handleFinalizarCompra}
+                disabled={!cepValido}
+                className="mt-8 block w-full bg-black px-4 py-5 text-center text-sm uppercase tracking-[0.12em] text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:text-neutral-500"
               >
                 Finalizar compra
-              </Link>
+              </button>
 
               <Link
                 href="/"

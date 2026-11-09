@@ -8,8 +8,8 @@ export interface Produto {
 }
 
 /**
- * Base do catálogo. Sem NEXT_PUBLIC_API_URL, as chamadas ficam na mesma origem (`/api`).
- * A variável continua como escape se a API voltar a ser externa.
+ * Base do catÃ¡logo. Sem NEXT_PUBLIC_API_URL, as chamadas ficam na mesma origem (`/api`).
+ * A variÃ¡vel continua como escape se a API voltar a ser externa.
  */
 export function resolverBaseApi(valor = process.env.NEXT_PUBLIC_API_URL): string {
   const base = valor?.trim();
@@ -25,7 +25,7 @@ export function urlCatalogo(id?: number | string, base = API_BASE_URL): string {
 }
 
 /**
- * Converte o identificador da imagem para a rota pública correta em /products.
+ * Converte o identificador da imagem para a rota pÃºblica correta em /products.
  * Exemplo: "000011" -> "/products/000011.png"
  */
 export function getProductImageUrl(imgName?: string): string {
@@ -33,7 +33,7 @@ export function getProductImageUrl(imgName?: string): string {
     return "/products/000011.png";
   }
 
-  // Se já for uma URL completa ou já começar com '/', mantém
+  // Se jÃ¡ for uma URL completa ou jÃ¡ comeÃ§ar com '/', mantÃ©m
   if (
     imgName.startsWith("http://") ||
     imgName.startsWith("https://") ||
@@ -42,17 +42,17 @@ export function getProductImageUrl(imgName?: string): string {
     return imgName;
   }
 
-  // Se já tiver extensão, anexa o caminho
+  // Se jÃ¡ tiver extensÃ£o, anexa o caminho
   if (imgName.includes(".")) {
     return `/products/${imgName}`;
   }
 
-  // Caso padrão: adiciona a extensão .png
+  // Caso padrÃ£o: adiciona a extensÃ£o .png
   return `/products/${imgName}.png`;
 }
 
 /**
- * Formata um número para moeda Real (BRL).
+ * Formata um nÃºmero para moeda Real (BRL).
  */
 export function formatarPreco(valor: number): string {
   if (typeof valor !== "number" || isNaN(valor)) {
@@ -65,7 +65,7 @@ export function formatarPreco(valor: number): string {
 }
 
 /**
- * Busca um produto específico pelo ID (GET /produtos/:id).
+ * Busca um produto especÃ­fico pelo ID (GET /produtos/:id).
  */
 export async function obterProdutoPorId(
   id: number | string
@@ -76,7 +76,7 @@ export async function obterProdutoPorId(
     });
 
     if (!res.ok) {
-      console.warn(`Produto ID ${id} não encontrado ou backend fora do ar (Status: ${res.status}).`);
+      console.warn(`Produto ID ${id} nÃ£o encontrado ou backend fora do ar (Status: ${res.status}).`);
       return null;
     }
 
@@ -89,7 +89,7 @@ export async function obterProdutoPorId(
 }
 
 /**
- * Busca todos os produtos do catálogo (GET /produtos).
+ * Busca todos os produtos do catÃ¡logo (GET /produtos).
  */
 export async function listarProdutos(): Promise<Produto[]> {
   try {
@@ -113,7 +113,7 @@ export async function listarProdutos(): Promise<Produto[]> {
 /**
  * Garante que a estrutura do produto do backend venha no formato esperado pelo frontend.
  */
-function normalizarProduto(item: Record<string, unknown>): Produto {
+export function normalizarProduto(item: Record<string, unknown>): Produto {
   let imagens: string[] = [];
 
   if (Array.isArray(item.imagem)) {
@@ -124,6 +124,9 @@ function normalizarProduto(item: Record<string, unknown>): Produto {
       .map((s: string) => s.trim())
       .filter(Boolean);
   }
+
+  // Ordena as imagens do produto em ordem crescente por nome/título do arquivo
+  imagens = ordenarImagensProduto(imagens);
 
   // Trata o campo tamanhos (pode vir como 'tamanhos' ou 'tamanho', array ou string)
   const rawTamanhos = item.tamanhos ?? item.tamanho ?? [];
@@ -146,4 +149,14 @@ function normalizarProduto(item: Record<string, unknown>): Produto {
     imagem: imagens,
     tamanhos: tamanhos,
   };
+}
+
+/**
+ * Ordena a lista de imagens de um produto em ordem crescente pelo nome/título do arquivo.
+ * Exemplo: ["000013", "000011", "000012"] -> ["000011", "000012", "000013"]
+ */
+export function ordenarImagensProduto(imagens: string[]): string[] {
+  return [...imagens].sort((a, b) =>
+    a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" })
+  );
 }
